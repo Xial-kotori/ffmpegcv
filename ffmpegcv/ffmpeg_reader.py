@@ -208,6 +208,7 @@ class FFmpegReader:
         resize,
         resize_keepratio,
         resize_keepratioalign,
+        infile_options=None
     ):
         assert os.path.exists(filename) and os.path.isfile(
             filename
@@ -223,6 +224,9 @@ class FFmpegReader:
         vid.duration = videoinfo.duration
         vid.pix_fmt = pix_fmt
         vid.codec = videoinfo.codec
+
+        if infile_options is None:
+            infile_options = ''
         
         if codec is not None:
             warnings.warn(
@@ -246,7 +250,7 @@ class FFmpegReader:
         vid.size = (vid.width, vid.height)
 
         vid.ffmpeg_cmd = (
-            f"ffmpeg -loglevel error "
+            f"ffmpeg -loglevel error {infile_options}"
             f' -vcodec {vid.codec} -r {vid.fps} -i "{filename}" '
             f" {filteropt} -pix_fmt {pix_fmt} -r {vid.fps} -f rawvideo pipe:"
         )
@@ -371,6 +375,7 @@ class FFmpegReaderNV(FFmpegReader):
         resize,
         resize_keepratio,
         resize_keepratioalign,
+        infile_options,
         gpu,
     ):
         assert os.path.exists(filename) and os.path.isfile(
@@ -383,6 +388,8 @@ class FFmpegReaderNV(FFmpegReader):
         assert (
             resize is None or len(resize) == 2
         ), "resize must be a tuple of (width, height)"
+        if infile_options is None:
+            infile_options = ''
         videoinfo = get_info(filename)
         vid = FFmpegReaderNV()
         vid.filename = filename
@@ -398,7 +405,7 @@ class FFmpegReaderNV(FFmpegReader):
         vid.codecNV = decoder_to_nvidia(vid.codec)
 
         vid.ffmpeg_cmd = (
-            f"ffmpeg -loglevel error -hwaccel cuda -hwaccel_device {gpu} "
+            f"ffmpeg -loglevel error -hwaccel cuda -hwaccel_device {gpu} {infile_options} "
             f' -vcodec {vid.codecNV} {cropopt} {scaleopt} -r {vid.fps} -i "{filename}" '
             f" {filteropt} -pix_fmt {pix_fmt} -r {vid.fps} -f rawvideo pipe:"
         )

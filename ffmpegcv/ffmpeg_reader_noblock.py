@@ -53,7 +53,6 @@ class FFmpegReaderNoblock(FFmpegReader):
 def child_process(shared_array, q:Queue, vcap_fun, vcap_args, vcap_kwargs):
     vid = vcap_fun(*vcap_args, **vcap_kwargs)
     np_array = np.frombuffer(shared_array.get_obj(), dtype=np.uint8).reshape((NFRAME,*vid.out_numpy_shape))
-    anything = True
     with vid:
         for i, img in enumerate(vid):
             iloop = i % NFRAME

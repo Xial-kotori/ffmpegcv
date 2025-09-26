@@ -22,6 +22,7 @@ class FFmpegReaderStreamRT(FFmpegReader):
         resize,
         resize_keepratio,
         resize_keepratioalign,
+        infile_options,
         timeout,
     ):
         vid = FFmpegReaderStreamRT()
@@ -33,6 +34,9 @@ class FFmpegReaderStreamRT(FFmpegReader):
         vid.count = videoinfo.count
         vid.duration = videoinfo.duration
         vid.pix_fmt = pix_fmt
+
+        if infile_options is None:
+            infile_options = ''
 
         (
             (vid.crop_width, vid.crop_height),
@@ -51,7 +55,7 @@ class FFmpegReaderStreamRT(FFmpegReader):
         rtsp_opt = '' if not stream_url.startswith('rtsp://') else '-rtsp_flags prefer_tcp -pkt_size 736 '
         vid.ffmpeg_cmd = (
             f"ffmpeg -loglevel error "
-            f" {rtsp_opt} "
+            f" {infile_options} {rtsp_opt} "
             "-fflags nobuffer -flags low_delay -strict experimental "
             f" -vcodec {vid.codec} -i {stream_url}"
             f" {filteropt} -pix_fmt {pix_fmt}  -f rawvideo pipe:"
@@ -74,6 +78,7 @@ class FFmpegReaderStreamRTNV(FFmpegReader):
         resize,
         resize_keepratio,
         resize_keepratioalign,
+        infile_options,
         gpu,
         timeout,
     ):
@@ -87,6 +92,9 @@ class FFmpegReaderStreamRTNV(FFmpegReader):
         vid.count = videoinfo.count
         vid.duration = videoinfo.duration
         vid.pix_fmt = pix_fmt
+
+        if infile_options is None:
+            infile_options = ''
 
         numGPU = get_num_NVIDIA_GPUs()
         assert numGPU > 0, "No GPU found"
@@ -109,7 +117,7 @@ class FFmpegReaderStreamRTNV(FFmpegReader):
         rtsp_opt = "-rtsp_transport tcp " if stream_url.startswith("rtsp://") else ""
         vid.ffmpeg_cmd = (
             f"ffmpeg -loglevel error -hwaccel cuda -hwaccel_device {gpu} "
-            f" {rtsp_opt} "
+            f" {infile_options} {rtsp_opt} "
             f"{cropopt} {scaleopt} "
             "-fflags nobuffer -flags low_delay -strict experimental "
             f' -vcodec {vid.codecNV} -i "{stream_url}" '

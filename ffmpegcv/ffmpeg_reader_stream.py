@@ -24,6 +24,7 @@ class FFmpegReaderStream(FFmpegReaderCAM):
         resize,
         resize_keepratio,
         resize_keepratioalign,
+        infile_options,
         timeout,
     ):
 
@@ -37,6 +38,8 @@ class FFmpegReaderStream(FFmpegReaderCAM):
         vid.duration = videoinfo.duration
         vid.pix_fmt = pix_fmt
 
+        if infile_options is None:
+            infile_options = ''
         (
             (vid.crop_width, vid.crop_height),
             (vid.width, vid.height),
@@ -53,7 +56,7 @@ class FFmpegReaderStream(FFmpegReaderCAM):
 
         rtsp_opt = '' if not stream_url.startswith('rtsp://') else '-rtsp_flags prefer_tcp -pkt_size 736 '
         vid.ffmpeg_cmd = (
-            f"ffmpeg -loglevel warning "
+            f"ffmpeg -loglevel warning {infile_options}"
             f" {rtsp_opt} "
             f" -vcodec {vid.codec} -i {stream_url} "
             f" {filteropt} -pix_fmt {pix_fmt}  -f rawvideo pipe:"
@@ -84,6 +87,7 @@ class FFmpegReaderStreamNV(FFmpegReaderCAM):
         resize,
         resize_keepratio,
         resize_keepratioalign,
+        infile_options,
         gpu,
         timeout,
     ):
@@ -99,6 +103,9 @@ class FFmpegReaderStreamNV(FFmpegReaderCAM):
         vid.duration = videoinfo.duration
         vid.pix_fmt = pix_fmt
 
+        if infile_options is None:
+            infile_options = ''
+        
         (
             (vid.crop_width, vid.crop_height),
             (vid.width, vid.height),
@@ -115,8 +122,8 @@ class FFmpegReaderStreamNV(FFmpegReaderCAM):
 
         rtsp_opt = '' if not stream_url.startswith('rtsp://') else '-rtsp_flags prefer_tcp -pkt_size 736 '
         vid.ffmpeg_cmd = (
-            f"ffmpeg -loglevel warning -hwaccel cuda -hwaccel_device {gpu} "
-            f" {rtsp_opt} "
+            f"ffmpeg -loglevel warning -hwaccel cuda -hwaccel_device {gpu}"
+            f"  {infile_options} {rtsp_opt} "
             f' -vcodec {vid.codecNV} {cropopt} {scaleopt} -i "{stream_url}" '
             f" {filteropt} -pix_fmt {pix_fmt} -f rawvideo pipe:"
         )

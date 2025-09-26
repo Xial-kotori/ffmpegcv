@@ -200,6 +200,16 @@ cap = ffmpegcv.VideoCapture(file, resize=(640, 480), resize_keepratio=True)
 cap = ffmpegcv.VideoCapture(file, crop_xywh=(0, 0, 640, 480), resize=(512, 512))
 ```
 
+### Extend Options
+**INFILE_OPTIONS**: Add extra options to ffmpeg input. 
+
+```python
+cap = ffmpegcv.VideoCapture(file, infile_options='-re -stream_loop -1')
+
+# equivalent ffmpeg command
+ffmpeg INFILE_OPTIONS -i FILE -f rawvideo pipe:
+```
+
 ## toCUDA device
 ---
 The ffmpegcv can translate the video/stream from HWC-uint8 cpu to CHW-float32 in CUDA device. It significantly reduce your cpu load, and get >2x faster than your manually convertion.

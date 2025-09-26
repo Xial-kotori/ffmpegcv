@@ -16,6 +16,7 @@ class FFmpegReaderQSV(FFmpegReader):
         resize,
         resize_keepratio,
         resize_keepratioalign,
+        infile_options,
         gpu,
     ):
         """
@@ -43,6 +44,9 @@ class FFmpegReaderQSV(FFmpegReader):
         vid.codecQSV = decoder_to_qsv(videoinfo.codec)
         vid.pix_fmt = pix_fmt
 
+        if infile_options is None:
+            infile_options = ''
+        
         (
             (vid.crop_width, vid.crop_height),
             (vid.width, vid.height),
@@ -58,7 +62,7 @@ class FFmpegReaderQSV(FFmpegReader):
         vid.size = (vid.width, vid.height)
 
         vid.ffmpeg_cmd = (
-            f"ffmpeg -loglevel warning "
+            f"ffmpeg -loglevel warning {infile_options}"
             f' -vcodec {vid.codecQSV} -r {vid.fps} -i "{filename}" '
             f" {filteropt} -pix_fmt {pix_fmt} -r {vid.fps} -f rawvideo pipe:"
         )

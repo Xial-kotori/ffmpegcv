@@ -69,6 +69,7 @@ def VideoCapture(
     resize=None,
     resize_keepratio=True,
     resize_keepratioalign="center",
+    infile_options=None
 ) -> FFmpegReader:
     """
     Alternative to cv2.VideoCapture
@@ -90,6 +91,8 @@ def VideoCapture(
     resize_keepratioalign : str
         Align the image to the `center`, `topleft`, `topright`, `bottomleft` or
         `bottomright`. Optional. Default is 'center'.
+    infile_options : str
+        Additional options for ffmpeg. Optional. Default is `None`.
 
     Examples
     --------
@@ -154,7 +157,7 @@ def VideoCapture(
     Author: Chenxinfeng 2022-04-16, cxf529125853@163.com
     """
     return FFmpegReader.VideoReader(
-        file, codec, pix_fmt, crop_xywh, resize, resize_keepratio, resize_keepratioalign
+        file, codec, pix_fmt, crop_xywh, resize, resize_keepratio, resize_keepratioalign, infile_options
     )
 
 
@@ -235,14 +238,16 @@ def VideoCaptureNV(
     resize=None,
     resize_keepratio=True,
     resize_keepratioalign="center",
-    gpu=0,
+    infile_options=None,
+    gpu=0
 ) -> FFmpegReaderNV:
     """
     `ffmpegcv.VideoCaptureNV` is a gpu version for `ffmpegcv.VideoCapture`.
     """
     _check_nvidia()
     return FFmpegReaderNV.VideoReader(
-        file, pix_fmt, crop_xywh, resize, resize_keepratio, resize_keepratioalign, gpu
+        file, pix_fmt, crop_xywh, resize, resize_keepratio, 
+        resize_keepratioalign, infile_options, gpu
     )
 
 
@@ -256,13 +261,15 @@ def VideoCaptureQSV(
     resize=None,
     resize_keepratio=True,
     resize_keepratioalign="center",
-    gpu=0,
+    infile_options=None,
+    gpu=0
 ) -> FFmpegReaderQSV:
     """
     `ffmpegcv.VideoCaptureQSV` is a gpu version for `ffmpegcv.VideoCapture`.
     """
     return FFmpegReaderQSV.VideoReader(
-        file, pix_fmt, crop_xywh, resize, resize_keepratio, resize_keepratioalign, gpu
+        file, pix_fmt, crop_xywh, resize, resize_keepratio, 
+        resize_keepratioalign, infile_options, gpu
     )
 
 
@@ -324,7 +331,7 @@ def VideoCaptureCAM(
     camsize_wh=None,
     camfps=None,
     camcodec=None,
-    campix_fmt=None,
+    campix_fmt=None
 ) -> FFmpegReaderCAM:
     """
     Alternative to cv2.VideoCapture
@@ -401,7 +408,7 @@ def VideoCaptureCAM(
         camsize_wh=camsize_wh,
         camfps=camfps,
         camcodec=camcodec,
-        campix_fmt=campix_fmt,
+        campix_fmt=campix_fmt
     )
 
 
@@ -416,7 +423,8 @@ def VideoCaptureStream(
     resize=None,
     resize_keepratio=True,
     resize_keepratioalign="center",
-    timeout=None,
+    infile_options=None,
+    timeout=None
 ) -> FFmpegReaderStream:
     """
     Alternative to cv2.VideoCapture
@@ -430,6 +438,7 @@ def VideoCaptureStream(
     resize  : see ffmpegcv.VideoReader
     resize_keepratio : see ffmpegcv.VideoReader
     resize_keepratioalign : see ffmpegcv.VideoReader
+    infile_options : see ffmpegcv.VideoReader
     timeout : waits in seconds for stream video to connect
 
     Examples
@@ -470,7 +479,8 @@ def VideoCaptureStream(
         resize,
         resize_keepratio,
         resize_keepratioalign,
-        timeout,
+        infile_options,
+        timeout
     )
 
 
@@ -485,6 +495,7 @@ def VideoCaptureStreamRT(
     resize=None,
     resize_keepratio=True,
     resize_keepratioalign="center",
+    infile_options=None,
     gpu=None,
     timeout=None,
 ) -> FFmpegReaderStreamRT:
@@ -497,7 +508,8 @@ def VideoCaptureStreamRT(
             resize,
             resize_keepratio,
             resize_keepratioalign,
-            timeout=timeout,
+            infile_options,
+            timeout=timeout
         )
     else:
         return FFmpegReaderStreamRTNV.VideoReader(
@@ -508,8 +520,9 @@ def VideoCaptureStreamRT(
             resize,
             resize_keepratio,
             resize_keepratioalign,
+            infile_options,
             gpu=gpu,
-            timeout=timeout,
+            timeout=timeout
         )
 
 

@@ -190,6 +190,15 @@ cap = ffmpegcv.VideoCapture(file, resize=(640, 480), resize_keepratio=True)
 ```python
 cap = ffmpegcv.VideoCapture(file, crop_xywh=(0, 0, 640, 480), resize=(512, 512))
 ```
+### 扩展选项
+**INFILE_OPTIONS**: 扩展 ffmpeg 输入选项。 
+
+```python
+cap = ffmpegcv.VideoCapture(file, infile_options='-re -stream_loop -1')
+
+# 等效于下面的 ffmpeg 命令
+ffmpeg INFILE_OPTIONS -i FILE -f rawvideo pipe:
+```
 
 ## toCUDA 将图像帧快速导出到CUDA设备
 ---
